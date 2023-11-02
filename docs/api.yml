@@ -48,7 +48,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/Book'
   /authors:
-    # TODO2: complete GET (can be filtered by name) - PUT - DELETE
     get:
       summary: Get all authors
       description: Retrieve a list of all authors.
