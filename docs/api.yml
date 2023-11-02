@@ -18,7 +18,7 @@ paths:
           required: false
           schema:
             type: string
-        #TODO3: add parameter to filter books by intervals of dates of the releaseDate
+        # TODO3: add parameter to filter books by intervals of dates of the releaseDate
       responses:
         200:
           description: The list of filtered books
@@ -48,9 +48,56 @@ paths:
                 items:
                   $ref: '#/components/schemas/Book'
   /authors:
-  #TODO2: complete GET (can be filtered by name) - PUT - DELETE
+    # TODO2: complete GET (can be filtered by name) - PUT - DELETE
+    get:
+      summary: Get all authors
+      description: Retrieve a list of all authors.
+      operationId: getAuthors
+      responses:
+        200:
+          description: List of authors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+    put:
+      summary: Create or update an author
+      operationId: createOrUpdateAuthor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Author'
+      responses:
+        200:
+          description: Author created or updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+    delete:
+      summary: Delete an author
+      operationId: deleteAuthor
+      responses:
+        204:
+          description: Author deleted successfully
 components:
   schemas:
+    Author:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        sex:
+          type: string
+          enum:
+            - M
+            - F
+
     Book:
       type: object
       properties:
@@ -59,8 +106,7 @@ components:
         bookName:
           type: string
         author:
-          #TODO1: set it as a component with properties : id, name, sex (M or F)
-          type: string
+          $ref: '#/components/schemas/Author'
         pageNumbers:
           type: integer
         topic:
