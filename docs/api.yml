@@ -25,21 +25,31 @@ paths:
             type: string
         - in: query
           name: releaseDateMin
-          description: |
-            If  `releaseDateMax` is not provided, `releaseDateMin` is ignored.
-            `releaseDateMin` can not be after `releaseDateMax`.
+          description: If `releaseDateMax` is not provided, `releaseDateMin` is ignored.
           schema:
             type: string
             format: date
           required: false
         - in: query
           name: releaseDateMax
-          description: |
-            If  `releaseDateMin` is not provided, `releaseDateMax` is ignored.
-            `releaseDateMax` can not be after `releaseDateMin`.
+          description: If `releaseDateMin` is not provided, `releaseDateMax` is ignored.
           schema:
             type: string
             format: date
+          required: false
+        - in: query
+          name: page
+          description: Page number for pagination (default: 1)
+          schema:
+            type: integer
+            default: 1
+          required: false
+        - in: query
+          name: pageSize
+          description: Number of items per page (default: 50)
+          schema:
+            type: integer
+            default: 50
           required: false
       responses:
         200:
@@ -80,9 +90,7 @@ paths:
       parameters:
         - in: query
           name: authorName
-          description: |
-            Filter returned authors by given name. 
-            If not provided, then the list is not filtered.
+          description: Filter returned authors by given name.
           schema:
             type: string
           required: false
@@ -196,3 +204,4 @@ components:
       enum:
         - M
         - F
+
