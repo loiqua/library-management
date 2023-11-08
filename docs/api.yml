@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Library API
-  version: 1.1.0
+  version: 1.2.0
   description: STD22001
 servers:
   - url: https://library.com
@@ -100,6 +100,34 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Response500"
+  /books/import:
+    post:
+      tags:
+        - Books
+      summary: Import books from Excel or JSON
+      operationId: importBooks
+      requestBody:
+        content:
+          application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportBook"
+      responses:
+        200:
+          description: The list of imported books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+    
   /authors:
     get:
       summary: Get all authors
@@ -176,45 +204,34 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Response500"
-  /authors/{aId}:
-    delete:
-      summary: Delete an author
-      operationId: deleteAuthor
+  /authors/import:
+    post:
       tags:
         - Authors
-      parameters:
-        - $ref: "#/components/parameters/pathPagination"
-        - name: aId
-          in: path
-          description: Author identifier to be deleted
-          schema:
-            type: string
-          required: true
+      summary: Import authors from Excel or JSON
+      operationId: importAuthors
+      requestBody:
+        content:
+          application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportAuthor"
       responses:
         200:
-          description: Success
+          description: The list of imported authors
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Response200"
-        400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Response400"
-        403:
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Response403"
-        500:
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Response500"
+                type: array
+                items:
+                  $ref: "#/components/schemas/Author"
+
 components:
   parameters:
     queryPagination:
@@ -344,3 +361,70 @@ components:
         - M
         - F
 
+    ImportAuthor:
+      oneOf:
+        - $ref: "#/components/schemas/ExcelImportAuthor"
+        - $ref: "#/components/schemas/JSONImportAuthor"
+    
+    ExcelImportAuthor:
+      type: object
+      properties:
+        authorName:
+          type: string
+        sex:
+          $ref: "#/components/schemas/Sex"
+    
+    JSONImportAuthor:
+      type: object
+      properties:
+        authorName:
+          type: string
+        sex:
+          $ref: "#/components/schemas/Sex"
+    
+    ImportBook:
+      oneOf:
+        - $ref: "#/components/schemas/ExcelImportBook"
+        - $ref: "#/components/schemas/JSONImportBook"
+    
+    ExcelImportBook:
+      type: object
+      properties:
+        bookName:
+          type: string
+        author:
+          type: string
+        pageNumbers:
+          type: integer
+        topic:
+          type: string
+          enum:
+            - ROMANCE
+            - COMEDY
+            - OTHER
+        releaseDate:
+          type: string
+          format: date
+        idAuthor:
+          type: string
+    
+    JSONImportBook:
+      type: object
+      properties:
+        bookName:
+          type: string
+        author:
+          type: string
+        pageNumbers:
+          type: integer
+        topic:
+          type: string
+          enum:
+            - ROMANCE
+            - COMEDY
+            - OTHER
+        releaseDate:
+          type: string
+          format: date
+        idAuthor:
+          type: string
