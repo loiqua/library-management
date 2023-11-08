@@ -44,9 +44,25 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Book"
+                $ref: "#/components/schemas/Response200"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response400"
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response403"
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response500"
     put:
       tags:
         - Books
@@ -65,9 +81,25 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Book"
+                $ref: "#/components/schemas/Response200"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response400"
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response403"
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response500"
   /authors:
     get:
       summary: Get all authors
@@ -88,9 +120,25 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Author"
+                $ref: "#/components/schemas/Response200"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response400"
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response403"
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response500"
     put:
       summary: Create or update authors
       operationId: crupdateAuthors
@@ -109,9 +157,25 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Author"
+                $ref: "#/components/schemas/Response200"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response400"
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response403"
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response500"
   /authors/{aId}:
     delete:
       summary: Delete an author
@@ -128,11 +192,29 @@ paths:
           required: true
       responses:
         200:
-          description: The author deleted
+          description: Success
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Author"
+                $ref: "#/components/schemas/Response200"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response400"
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response403"
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response500"
 components:
   parameters:
     queryPagination:
@@ -166,6 +248,54 @@ components:
         default: 50
         required: false
   schemas:
+    Response:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/ResponseStatus"
+        body:
+          type: object
+
+    ResponseStatus:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+
+    Response200:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+        - properties:
+            data:
+              type: object
+
+    Response400:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+        - properties:
+            errors:
+              type: array
+
+    Response403:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+        - properties:
+            message:
+              type: string
+
+    Response500:
+      allOf:
+        - $ref: "#/components/schemas/Response"
+        - type: object
+        - properties:
+            error:
+              type: string
+
     Book:
       type: object
       properties:
@@ -186,20 +316,18 @@ components:
         releaseDate:
           type: string
           format: date
+
     CrupdateBook:
       allOf:
         - $ref: "#/components/schemas/Book"
         - type: object
-          properties:
+        - properties:
             author:
               type: string
               nullable: true
-          required:
-            - author
-      properties:
-        author:
-          type: string
-          nullable: true
+        - required:
+          - author
+
     Author:
       type: object
       properties:
@@ -209,8 +337,10 @@ components:
           type: string
         sex:
           $ref: "#/components/schemas/Sex"
+
     Sex:
       type: string
       enum:
         - M
         - F
+
