@@ -119,6 +119,7 @@ paths:
       tags:
         - Authors
       parameters:
+        - $ref: "#/components/parameters/pathPagination"
         - name: aId
           in: path
           description: Author identifier to be deleted
